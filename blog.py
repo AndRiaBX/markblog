@@ -42,10 +42,12 @@ def get_file_hash(filepath):
     return h.hexdigest()
 
 
-def load_posts(force=False):
+def load_posts(force=False, content_dir=None):
     """Load all markdown posts from content/ directory. Caches via JSON."""
-    if not os.path.isdir(CONTENT_DIR):
-        os.makedirs(CONTENT_DIR, exist_ok=True)
+    if content_dir is None:
+        content_dir = CONTENT_DIR
+    if not os.path.isdir(content_dir):
+        os.makedirs(content_dir, exist_ok=True)
 
     cache = {}
     if os.path.exists(INDEX_FILE) and not force:
@@ -55,10 +57,10 @@ def load_posts(force=False):
     posts = []
     current_hashes = {}
 
-    for fname in sorted(os.listdir(CONTENT_DIR)):
+    for fname in sorted(os.listdir(content_dir)):
         if not fname.endswith('.md'):
             continue
-        fpath = os.path.join(CONTENT_DIR, fname)
+        fpath = os.path.join(content_dir, fname)
         fhash = get_file_hash(fpath)
         current_hashes[fname] = fhash
 
