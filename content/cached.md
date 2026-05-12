@@ -1,6 +1,0 @@
----
-title: Cached
-date: 2026-01-01
-tags: 
----
-Original
