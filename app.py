@@ -2,6 +2,7 @@
 
 from flask import Flask, render_template, request, make_response
 import markdown
+from xml.sax.saxutils import escape as xml_escape
 from blog import load_posts, get_post
 
 app = Flask(__name__)
@@ -40,7 +41,7 @@ def post(slug):
     posts = load_and_check()
     entry = get_post(slug, posts)
     if not entry:
-        return render_template('base.html', title='Not Found', content='<h1>404</h1><p>Post not found.</p>'), 404
+        return render_template('404.html', title='Not Found'), 404
     html = render_md(entry['body'])
     return render_template('post.html', post=entry, content=html)
 
@@ -60,20 +61,22 @@ def rss():
     for p in posts[:20]:
         url = f"{domain}/{p['slug']}"
         pub_date = p.get('date', '')
+        # XML-escape title and description to prevent injection
+        safe_title = xml_escape(p['title'])
         items.append(f"""
     <item>
-      <title>{p['title']}</title>
-      <link>{url}</link>
-      <guid>{url}</guid>
-      <pubDate>{pub_date}</pubDate>
+      <title>{safe_title}</title>
+      <link>{xml_escape(url)}</link>
+      <guid>{xml_escape(url)}</guid>
+      <pubDate>{xml_escape(pub_date)}</pubDate>
     </item>""")
 
     rss_xml = f"""<?xml version="1.0" encoding="UTF-8"?>
 <rss version="2.0">
   <channel>
     <title>MarkBlog</title>
-    <link>{domain}</link>
-    <description>File-based Markdown blog</description>
+    <link>{xml_escape(domain)}</link>
+    <description>A file-based Markdown blog engine</description>
     {''.join(items)}
   </channel>
 </rss>"""
