@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{{ title }} — MarkBlog</title>
+  <link rel="alternate" type="application/rss+xml" title="RSS" href="/feed.xml">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #fafafa; color: #1a202c; line-height: 1.7; }
+    .container { max-width: 760px; margin: 0 auto; padding: 2rem 1rem; }
+    header { margin-bottom: 2rem; border-bottom: 2px solid #e2e8f0; padding-bottom: 1rem; }
+    header h1 { font-size: 1.75rem; }
+    header h1 a { color: #2b6cb0; text-decoration: none; }
+    header nav a { color: #718096; margin-right: 1rem; font-size: .9rem; text-decoration: none; }
+    header nav a:hover { color: #2b6cb0; }
+    .content h1 { font-size: 1.6rem; margin: 1.5rem 0 .5rem; }
+    .content h2 { font-size: 1.3rem; margin: 1.25rem 0 .4rem; }
+    .content h3 { font-size: 1.1rem; margin: 1rem 0 .3rem; }
+    .content p { margin-bottom: 1rem; }
+    .content ul, .content ol { margin: .5rem 0 1rem 1.5rem; }
+    .content a { color: #2b6cb0; }
+    .content blockquote { border-left: 4px solid #2b6cb0; padding: .5rem 1rem; margin: 1rem 0; background: #edf2f7; border-radius: 4px; color: #4a5568; }
+    .content code { background: #edf2f7; padding: .15rem .35rem; border-radius: 4px; font-size: .85rem; font-family: 'Fira Code', 'Cascadia Code', monospace; }
+    .content pre { background: #1a202c; color: #e2e8f0; padding: 1rem; border-radius: 8px; overflow-x: auto; margin: 1rem 0; font-size: .85rem; line-height: 1.5; }
+    .content pre code { background: none; padding: 0; color: inherit; font-size: inherit; }
+    .content img { max-width: 100%; border-radius: 8px; margin: 1rem 0; }
+    .content table { width: 100%; border-collapse: collapse; margin: 1rem 0; }
+    .content th, .content td { border: 1px solid #e2e8f0; padding: .5rem; text-align: left; }
+    .content th { background: #edf2f7; }
+    footer { margin-top: 3rem; padding-top: 1rem; border-top: 2px solid #e2e8f0; font-size: .85rem; color: #a0aec0; text-align: center; }
+    .tag { display: inline-block; background: #ebf4ff; color: #2b6cb0; padding: .15rem .5rem; border-radius: 4px; font-size: .8rem; margin-right: .25rem; }
+    .tag:hover { background: #2b6cb0; color: #fff; text-decoration: none; }
+    .post-meta { color: #718096; font-size: .9rem; margin-bottom: .5rem; }
+    .post-meta .tag { margin-left: .25rem; }
+    .post-item { margin-bottom: 1.5rem; padding-bottom: 1.5rem; border-bottom: 1px solid #e2e8f0; }
+    .post-item h2 { font-size: 1.25rem; }
+    .post-item h2 a { color: #2d3748; text-decoration: none; }
+    .post-item h2 a:hover { color: #2b6cb0; }
+    .post-item .excerpt { color: #4a5568; font-size: .95rem; margin-top: .25rem; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1><a href="/">MarkBlog</a></h1>
+      <nav>
+        <a href="/">Home</a>
+        <a href="/feed.xml">RSS</a>
+      </nav>
+    </header>
+    <main>
+      {% block content %}{{ content|safe if content else '' }}{% endblock %}
+    </main>
+    <footer>
+      Powered by <a href="https://github.com/AndRiaBX/markblog">MarkBlog</a>
+    </footer>
+  </div>
+</body>
+</html>

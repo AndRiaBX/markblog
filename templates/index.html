@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% block content %}
+  {% if tag %}
+    <h2>Posts tagged: <span class="tag">{{ tag }}</span></h2>
+    <p style="margin-bottom:1rem;"><a href="/">← All posts</a></p>
+  {% else %}
+    <h2>Recent Posts</h2>
+  {% endif %}
+
+  {% if posts %}
+    {% for p in posts %}
+      <div class="post-item">
+        <div class="post-meta">
+          {{ p.date }}
+          {% for t in p.tags %}
+            <a href="/tag/{{ t }}" class="tag">{{ t }}</a>
+          {% endfor %}
+        </div>
+        <h2><a href="/{{ p.slug }}">{{ p.title }}</a></h2>
+        <div class="excerpt">{{ p.body|truncate(200, True)|e }}</div>
+      </div>
+    {% endfor %}
+  {% else %}
+    <p style="color:#a0aec0;">No posts yet. Drop a <code>.md</code> file in the <code>content/</code> directory.</p>
+  {% endif %}
+{% endblock %}

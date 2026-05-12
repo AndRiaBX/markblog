@@ -1,0 +1,14 @@
+{
+  "hello-world.md": {
+    "hash": "af5ee5852e4368f1909bb8d5ab68dc4f03d73d61f50699741d297114c9d56d97",
+    "slug": "hello-world",
+    "title": "Hello, MarkBlog!",
+    "date": "2026-05-12",
+    "tags": [
+      "markdown",
+      "blog",
+      "python"
+    ],
+    "body": "# Hello, MarkBlog!\n\nWelcome to **MarkBlog** \u2014 a lightweight blog engine that renders Markdown files.\n\n## Features\n\n- Write posts in **plain Markdown**\n- **YAML frontmatter** for metadata\n- **Tag-based** navigation\n- **RSS feed** auto-generated\n\n### Code Highlighting\n\n```python\ndef greet(name):\n    return f\"Hello, {name}!\"\n\nprint(greet(\"MarkBlog\"))\n```\n\n### Blockquotes\n\n> Markdown blogging simplified.  \n> No database. No CMS. Just files.\n\n---\n\n*Happy blogging!*\n"
+  }
+}

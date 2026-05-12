@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% block content %}
+  <h1>{{ post.title }}</h1>
+  <div class="post-meta">
+    {{ post.date }}
+    {% for t in post.tags %}
+      <a href="/tag/{{ t }}" class="tag">{{ t }}</a>
+    {% endfor %}
+  </div>
+  <div class="content">{{ content|safe }}</div>
+  <p style="margin-top:2rem;"><a href="/">← Back to all posts</a></p>
+{% endblock %}
