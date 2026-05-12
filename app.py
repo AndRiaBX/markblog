@@ -88,5 +88,8 @@ def rss():
 if __name__ == '__main__':
     # Ensure content directory exists
     import os
-    os.makedirs(os.path.join(os.path.dirname(__file__), 'content'), exist_ok=True)
+    content_path = os.path.join(os.path.dirname(__file__), 'content')
+    os.makedirs(content_path, exist_ok=True)
+    print(f'[markblog] Content directory: {content_path}')
+    print('[markblog] Starting server at http://0.0.0.0:5000')
     app.run(host='0.0.0.0', port=5000, debug=True)

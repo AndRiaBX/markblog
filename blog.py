@@ -14,7 +14,11 @@ TAG_SPLIT_RE = re.compile(r'[,\s]+')
 
 
 def parse_frontmatter(text):
-    """Extract YAML-like frontmatter and body text."""
+    """Extract YAML-like frontmatter and body text.
+
+    Supports title, date, and tags fields. Tags can be comma or space separated.
+    Returns (meta_dict, body_text). If no frontmatter is found, meta is empty.
+    """
     m = FRONTMATTER_RE.match(text)
     if not m:
         return {}, text
@@ -23,14 +27,19 @@ def parse_frontmatter(text):
     body = m.group(2)
     meta = {}
     for line in raw.strip().split('\n'):
-        if ':' in line:
-            key, _, val = line.partition(':')
-            key = key.strip().lower()
-            val = val.strip()
-            if key == 'tags':
-                meta[key] = [t.strip() for t in TAG_SPLIT_RE.split(val) if t.strip()]
-            else:
-                meta[key] = val
+        line = line.strip()
+        if not line or ':' not in line:
+            continue
+        key, _, val = line.partition(':')
+        key = key.strip().lower()
+        val = val.strip()
+        if key == 'tags':
+            meta[key] = [t.strip() for t in TAG_SPLIT_RE.split(val) if t.strip()]
+        elif key == 'title':
+            meta[key] = val
+        elif key == 'date':
+            meta[key] = val
+        # Ignore unknown keys silently (future-proof)
     return meta, body
 
 
@@ -51,26 +60,37 @@ def load_posts(force=False, content_dir=None):
 
     cache = {}
     if os.path.exists(INDEX_FILE) and not force:
-        with open(INDEX_FILE, 'r', encoding='utf-8') as f:
-            cache = json.load(f)
+        try:
+            with open(INDEX_FILE, 'r', encoding='utf-8') as f:
+                cache = json.load(f)
+        except (json.JSONDecodeError, OSError) as e:
+            # Corrupted or unreadable cache — rebuild from scratch
+            print(f'[markblog] Cache error, rebuilding: {e}')
+            cache = {}
 
     posts = []
-    current_hashes = {}
 
     for fname in sorted(os.listdir(content_dir)):
         if not fname.endswith('.md'):
             continue
         fpath = os.path.join(content_dir, fname)
-        fhash = get_file_hash(fpath)
-        current_hashes[fname] = fhash
+        try:
+            fhash = get_file_hash(fpath)
+        except OSError as e:
+            print(f'[markblog] Skipping {fname}: {e}')
+            continue
 
         # Use cache if unchanged
         if fname in cache and cache[fname].get('hash') == fhash:
             posts.append(cache[fname])
             continue
 
-        with open(fpath, 'r', encoding='utf-8') as f:
-            text = f.read()
+        try:
+            with open(fpath, 'r', encoding='utf-8') as f:
+                text = f.read()
+        except OSError as e:
+            print(f'[markblog] Error reading {fname}: {e}')
+            continue
 
         meta, body = parse_frontmatter(text)
         slug = fname[:-3]  # remove .md
@@ -94,9 +114,12 @@ def load_posts(force=False, content_dir=None):
             return '0000-00-00'
     posts.sort(key=lambda p: (sort_key(p), p['slug']), reverse=True)
 
-    # Write cache
-    with open(INDEX_FILE, 'w', encoding='utf-8') as f:
-        json.dump(cache, f, indent=2)
+    # Write cache (best-effort — never crash for cache write failure)
+    try:
+        with open(INDEX_FILE, 'w', encoding='utf-8') as f:
+            json.dump(cache, f, indent=2)
+    except OSError as e:
+        print(f'[markblog] Failed to write cache: {e}')
 
     return posts
 
